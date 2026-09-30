@@ -213,3 +213,21 @@ html.lenis body {
   from { opacity: 0; letter-spacing: 0.1em; }
   to { opacity: 1; letter-spacing: 0.42em; }
 }
+
+/* Team portraits: pointer-driven parallax and spotlight (see Team.tsx) */
+.portrait-layer {
+  transform: translate3d(calc(var(--px) * var(--depth)), calc(var(--py) * var(--depth)), 0);
+  transition: transform 0.9s var(--ease-out-expo);
+}
+.portrait-spot {
+  background: radial-gradient(
+    420px circle at calc(50% + var(--px) * 50%) calc(50% + var(--py) * 50%),
+    rgb(255 255 255 / 0.1),
+    transparent 55%
+  );
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+.portrait-stage:hover .portrait-spot {
+  opacity: 1;
+}

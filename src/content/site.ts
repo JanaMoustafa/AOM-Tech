@@ -219,7 +219,7 @@ export const team: TeamMember[] = [
   {
     name: "Jana Mostafa",
     role: "Head of Tech",
-    photo: "/team/jana.png",
+    photo: "/team/jana-mostafa.png",
     linkedin: "https://www.linkedin.com/in/jana-mostafa-535ab62a2",
   },
 ];

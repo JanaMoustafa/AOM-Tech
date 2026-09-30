@@ -3,6 +3,7 @@
 import { motion } from "motion/react";
 import Image from "next/image";
 import { team } from "@/content/site";
+import { type CSSProperties, useRef } from "react";
 import { EASE, RevealText, Tilt } from "./fx";
 
 export function Team() {
@@ -36,33 +37,7 @@ export function Team() {
                   <div className="ring-spin absolute left-1/2 top-1/2 aspect-square w-[160%] -translate-x-1/2 -translate-y-1/2" />
                 </div>
                 <article className="relative overflow-hidden rounded-[28px] border border-line bg-ink-2">
-                  {/* One shared backdrop for every portrait, in the brand colours. */}
-                  <div className="grain relative aspect-[4/5] overflow-hidden bg-ink-3">
-                    <div
-                      aria-hidden
-                      className="absolute left-1/2 top-[18%] h-[70%] w-[90%] -translate-x-1/2 rounded-full bg-violet/45 blur-3xl transition-[opacity,transform] duration-700 group-hover:scale-110 group-hover:opacity-100 md:opacity-80"
-                    />
-                    <div aria-hidden className="absolute -bottom-10 -right-10 h-1/2 w-1/2 rounded-full bg-pink/25 blur-3xl" />
-                    <div aria-hidden className="absolute -bottom-16 -left-10 h-1/2 w-1/2 rounded-full bg-blue/20 blur-3xl" />
-                    <svg
-                      viewBox="0 0 46 100"
-                      aria-hidden
-                      className="absolute left-1/2 top-[6%] h-[80%] -translate-x-1/2 opacity-[0.07]"
-                    >
-                      <path d="M0 21 L35 1 L35 41 Z" fill="#fff" />
-                      <path d="M0 50 L35 30 L35 70 Z" fill="#fff" />
-                      <path d="M0 79 L35 59 L35 99 Z" fill="#fff" />
-                      <rect x="41.5" y="1" width="3" height="98" fill="#fff" />
-                    </svg>
-                    <Image
-                      src={m.photo}
-                      alt={`${m.name}, ${m.role}`}
-                      fill
-                      quality={90}
-                      sizes="(min-width: 1024px) 400px, (min-width: 640px) 50vw, 100vw"
-                      className="object-cover transition-transform duration-700 ease-out-expo [mask-image:linear-gradient(to_bottom,black_62%,transparent_94%)] group-hover:scale-[1.04]"
-                    />
-                  </div>
+                  <Portrait photo={m.photo} alt={`${m.name}, ${m.role}`} index={i} />
 
                   <div className="relative -mt-20 flex items-end justify-between gap-4 px-6 pb-6 sm:px-7 sm:pb-7">
                     <div>
@@ -90,5 +65,94 @@ export function Team() {
         </ul>
       </div>
     </section>
+  );
+}
+
+/**
+ * One shared stage for every portrait, so photos taken in different places
+ * look like one shoot: a brand-coloured backdrop that drifts on its own and
+ * follows the pointer, a violet rim light around the person, and the same
+ * colour grade laid over each cut-out.
+ */
+function Portrait({ photo, alt, index }: { photo: string; alt: string; index: number }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const fade = "linear-gradient(to bottom, black 60%, transparent 93%)";
+
+  // Pointer position as CSS variables (-1..1); no React re-renders.
+  const onMove = (e: React.PointerEvent) => {
+    if (e.pointerType !== "mouse" || !ref.current) return;
+    const r = ref.current.getBoundingClientRect();
+    ref.current.style.setProperty("--px", String(((e.clientX - r.left) / r.width) * 2 - 1));
+    ref.current.style.setProperty("--py", String(((e.clientY - r.top) / r.height) * 2 - 1));
+  };
+  const onLeave = () => {
+    ref.current?.style.setProperty("--px", "0");
+    ref.current?.style.setProperty("--py", "0");
+  };
+
+  return (
+    <div
+      ref={ref}
+      onPointerMove={onMove}
+      onPointerLeave={onLeave}
+      style={{ "--px": 0, "--py": 0 } as CSSProperties}
+      className="portrait-stage grain relative aspect-[4/5] overflow-hidden bg-[#1c1930]"
+    >
+      {/* Backdrop: deep violet base with slow-drifting light, moving opposite the pointer for depth. */}
+      <div aria-hidden className="portrait-layer absolute -inset-[12%]" style={{ "--depth": "-18px" } as CSSProperties}>
+        <div
+          className="animate-drift absolute left-[8%] top-[4%] h-[75%] w-[85%] rounded-full bg-violet/55 blur-3xl"
+          style={{ animationDelay: `${index * -7}s` }}
+        />
+        <div
+          className="animate-drift-slow absolute bottom-[2%] right-[-6%] h-[55%] w-[60%] rounded-full bg-pink/30 blur-3xl"
+          style={{ animationDelay: `${index * -11}s` }}
+        />
+        <div className="animate-drift absolute bottom-[-4%] left-[-8%] h-[50%] w-[55%] rounded-full bg-blue/30 blur-3xl" />
+        {/* Soft halo right behind the head */}
+        <div className="absolute left-1/2 top-[30%] h-[46%] w-[62%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(closest-side,rgb(226_169_241/0.5),transparent)]" />
+        {/* Concentric rings, echoing the particle hero */}
+        <svg viewBox="0 0 200 200" className="absolute left-1/2 top-[30%] w-[118%] -translate-x-1/2 -translate-y-1/2 opacity-[0.12]">
+          {[40, 60, 80, 98].map((r) => (
+            <circle key={r} cx="100" cy="100" r={r} fill="none" stroke="#fff" strokeWidth="0.35" strokeDasharray="1 2.5" />
+          ))}
+        </svg>
+      </div>
+
+      {/* Spotlight that follows the pointer */}
+      <div aria-hidden className="portrait-spot pointer-events-none absolute inset-0" />
+
+      {/* The person, with a violet rim light and a gentle parallax */}
+      <div className="portrait-layer absolute inset-0" style={{ "--depth": "8px" } as CSSProperties}>
+        <div className="relative h-full w-full transition-transform duration-700 ease-out-expo group-hover:scale-[1.035]">
+          <Image
+            src={photo}
+            alt={alt}
+            fill
+            quality={90}
+            priority={false}
+            sizes="(min-width: 1024px) 400px, (min-width: 640px) 50vw, 100vw"
+            className="object-cover [filter:drop-shadow(0_0_1.5px_rgb(226_169_241/0.55))_drop-shadow(0_0_28px_rgb(140_82_255/0.45))]"
+            style={{ maskImage: fade, WebkitMaskImage: fade }}
+          />
+          {/* Same colour grade on every cut-out, masked to the person's silhouette */}
+          <div
+            aria-hidden
+            className="absolute inset-0 bg-[linear-gradient(160deg,rgb(140_82_255/0.55),rgb(26_20_60/0.2)_45%,rgb(255_102_196/0.45))] mix-blend-soft-light"
+            style={{
+              maskImage: `url(${photo}), ${fade}`,
+              WebkitMaskImage: `url(${photo}), ${fade}`,
+              maskComposite: "intersect",
+              WebkitMaskComposite: "source-in",
+              maskSize: "cover",
+              WebkitMaskSize: "cover",
+            }}
+          />
+        </div>
+      </div>
+
+      {/* Floor: grounds the portrait and hands off to the name below */}
+      <div aria-hidden className="absolute inset-x-0 bottom-0 h-[38%] bg-gradient-to-t from-ink-2 via-ink-2/70 to-transparent" />
+    </div>
   );
 }
