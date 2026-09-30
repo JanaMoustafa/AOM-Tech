@@ -46,7 +46,13 @@ export function RevealText({
         const content = `${word}${i < words.length - 1 ? "\u00a0" : ""}`;
         return (
           <span key={i} aria-hidden className="inline-block overflow-hidden pb-[0.1em] align-bottom">
-            {reduce ? (
+            {onMount ? (
+              // Page-load reveals run in CSS so they start at first paint,
+              // without waiting for JavaScript to download and hydrate.
+              <span className="rise" style={{ animationDelay: `${delay + i * stagger}s` }}>
+                {content}
+              </span>
+            ) : reduce ? (
               <span className="inline-block">{content}</span>
             ) : (
               <motion.span

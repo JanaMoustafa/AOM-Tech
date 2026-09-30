@@ -162,3 +162,54 @@ html.lenis body {
   animation: ring-spin 6s linear infinite;
 }
 @keyframes ring-spin { to { --angle: 360deg; } }
+
+/* ---- Hero first paint: pure CSS, so nothing waits for JavaScript ---- */
+
+/* Static logo mark shown with the HTML; particles take over from it. */
+.hero-mark {
+  opacity: 0;
+  animation:
+    mark-in 0.7s var(--ease-out-expo) 0.05s forwards,
+    mark-glow 2.4s ease-in-out 0.75s infinite alternate;
+}
+.hero-mark-out {
+  animation: mark-out 0.6s ease-out forwards;
+}
+@keyframes mark-in {
+  from { opacity: 0; scale: 0.92; }
+  to { opacity: 1; scale: 1; }
+}
+@keyframes mark-glow {
+  from { opacity: 1; filter: drop-shadow(0 0 0 rgb(140 82 255 / 0)); }
+  to { opacity: 1; filter: drop-shadow(0 0 28px rgb(140 82 255 / 0.65)); }
+}
+@keyframes mark-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+/* Words rising out of a mask (the hero headline). */
+.rise {
+  display: inline-block;
+  animation: rise 0.95s var(--ease-out-expo) both;
+}
+@keyframes rise {
+  from { transform: translateY(110%) rotate(4deg); }
+  to { transform: none; }
+}
+
+.fade-up {
+  animation: fade-up 0.8s var(--ease-out-expo) both;
+}
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: none; }
+}
+
+.track-in {
+  animation: track-in 1.4s var(--ease-out-expo) both;
+}
+@keyframes track-in {
+  from { opacity: 0; letter-spacing: 0.1em; }
+  to { opacity: 1; letter-spacing: 0.42em; }
+}

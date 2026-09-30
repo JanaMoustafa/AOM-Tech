@@ -1,6 +1,6 @@
 "use client";
 
-import Lenis from "lenis";
+import type Lenis from "lenis";
 import { useEffect } from "react";
 
 let instance: Lenis | null = null;
@@ -22,16 +22,24 @@ export function SmoothScroll() {
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-    const lenis = new Lenis({ anchors: { offset: -72 }, lerp: 0.1 });
-    instance = lenis;
-    let frame = requestAnimationFrame(function raf(time) {
-      lenis.raf(time);
-      frame = requestAnimationFrame(raf);
+    // Loaded after first paint so it never delays the hero.
+    let frame = 0;
+    let lenis: Lenis | null = null;
+    let cancelled = false;
+    import("lenis").then(({ default: LenisClass }) => {
+      if (cancelled) return;
+      lenis = new LenisClass({ anchors: { offset: -72 }, lerp: 0.1 });
+      instance = lenis;
+      frame = requestAnimationFrame(function raf(time) {
+        lenis?.raf(time);
+        frame = requestAnimationFrame(raf);
+      });
     });
 
     return () => {
+      cancelled = true;
       cancelAnimationFrame(frame);
-      lenis.destroy();
+      lenis?.destroy();
       instance = null;
     };
   }, []);
