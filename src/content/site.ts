@@ -211,9 +211,10 @@ export const team: TeamMember[] = [
     linkedin: "https://www.linkedin.com/in/abdelrahman-hossam-elsofany-b2083534a/",
   },
   {
-    name: "Mohamed",
+    name: "Mohamed El Daw",
     role: "Co-founder & Marketing Director",
     photo: "/team/mohamed.png",
+    linkedin: "https://www.linkedin.com/in/mohamed-haitham-el-daw-8606202b4/",
   },
   {
     name: "Jana Mostafa",
