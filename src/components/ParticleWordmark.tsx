@@ -53,9 +53,15 @@ const MARK: { d: string; fill: string }[] = [
   { d: "M41.5 1 H44.5 V99 H41.5 Z", fill: "#ffffff" },
 ];
 
-// Timeline of the intro, in ms from first paint.
+// Timeline of the intro, in ms from the first animated frame.
 const FORM_LOGO = 0;
-const MORPH_AT = 1900;
+// Fast load: particles swarm in from nowhere and form the mark first.
+const MORPH_AT_FAST = 1500;
+// Slow load: the static mark has already been on screen, so it comes alive
+// in place and turns into the wordmark sooner.
+const MORPH_AT_LATE = 850;
+// If the script starts later than this, the static mark was clearly visible.
+const LATE_START_MS = 900;
 const BLEND_MS = 900;
 
 /**
@@ -66,6 +72,7 @@ const BLEND_MS = 900;
  */
 export function ParticleWordmark({ text = "AOM" }: { text?: string }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const markRef = useRef<SVGSVGElement>(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -82,6 +89,9 @@ export function ParticleWordmark({ text = "AOM" }: { text?: string }) {
     let visible = true;
     let startedAt = -1;
     let introDone = reduce;
+    let lateStart = false;
+    let morphAt = MORPH_AT_FAST;
+    const hideStaticMark = () => markRef.current?.classList.add("hero-mark-out");
     const pointer = { x: -9999, y: -9999, active: false };
 
     const sample = (draw: (c: CanvasRenderingContext2D) => void, gap: number) => {
@@ -157,9 +167,11 @@ export function ParticleWordmark({ text = "AOM" }: { text?: string }) {
         const jitter = i >= logoPoints.length ? gap * 0.8 : 0;
         const textColor = gradientAt((t.x - minX) / span);
         const settled = introDone;
+        // A late start begins exactly on the static mark so the handover is seamless.
+        const onMark = !settled && lateStart;
         return {
-          x: settled ? t.x : width / 2 + (Math.random() - 0.5) * width * 1.4,
-          y: settled ? t.y : height / 2 + (Math.random() - 0.5) * height * 2.2,
+          x: settled ? t.x : onMark ? l.x : width / 2 + (Math.random() - 0.5) * width * 1.4,
+          y: settled ? t.y : onMark ? l.y : height / 2 + (Math.random() - 0.5) * height * 2.2,
           vx: 0,
           vy: 0,
           lx: l.x + (Math.random() - 0.5) * jitter,
@@ -177,14 +189,14 @@ export function ParticleWordmark({ text = "AOM" }: { text?: string }) {
       });
     };
 
-    const shockwave = (x: number, y: number) => {
+    const shockwave = (x: number, y: number, strength = 1) => {
       const radius = Math.max(220, width * 0.22);
       for (const p of particles) {
         const dx = p.x - x;
         const dy = p.y - y;
         const d = Math.sqrt(dx * dx + dy * dy) || 1;
         if (d < radius) {
-          const force = (1 - d / radius) * 34;
+          const force = (1 - d / radius) * 34 * strength;
           p.vx += (dx / d) * force;
           p.vy += (dy / d) * force;
         }
@@ -193,19 +205,22 @@ export function ParticleWordmark({ text = "AOM" }: { text?: string }) {
 
     const draw = (now: number) => {
       ctx.clearRect(0, 0, width, height);
-      if (startedAt < 0) startedAt = now;
+      if (startedAt < 0) {
+        startedAt = now;
+        hideStaticMark();
+      }
       const t = now - startedAt;
 
-      if (!introDone && t >= MORPH_AT) {
+      if (!introDone && t >= morphAt) {
         introDone = true;
         // A small outward kick as the mark breaks apart.
         shockwave(width / 2, height / 2);
       }
-      const blend = reduce ? 1 : Math.min(1, Math.max(0, (t - MORPH_AT) / BLEND_MS));
+      const blend = reduce ? 1 : Math.min(1, Math.max(0, (t - morphAt) / BLEND_MS));
       const scatter = reduce ? 0 : Math.min(1, window.scrollY / Math.max(1, window.innerHeight));
       const scatterEase = scatter * scatter;
       const radius = Math.max(70, width * 0.08);
-      const spring = t < MORPH_AT ? 0.012 + Math.min(1, (t - FORM_LOGO) / 1200) * 0.012 : 0.018;
+      const spring = t < morphAt ? 0.012 + Math.min(1, (t - FORM_LOGO) / 1200) * 0.012 : 0.018;
 
       for (const p of particles) {
         if (!reduce) {
@@ -294,9 +309,17 @@ export function ParticleWordmark({ text = "AOM" }: { text?: string }) {
     let disposed = false;
     document.fonts.ready.then(() => {
       if (disposed) return;
+      lateStart = performance.now() > LATE_START_MS;
+      morphAt = lateStart ? MORPH_AT_LATE : MORPH_AT_FAST;
       build();
       lastWidth = width;
-      if (reduce) draw(0);
+      if (reduce) {
+        draw(0);
+        hideStaticMark();
+      } else if (lateStart) {
+        // The static mark "comes alive": a soft outward breath before settling.
+        shockwave(width / 2, height / 2, 0.35);
+      }
       resizeObserver.observe(canvas);
       intersection.observe(canvas);
       start();
@@ -321,11 +344,26 @@ export function ParticleWordmark({ text = "AOM" }: { text?: string }) {
   }, [text]);
 
   return (
-    <canvas
-      ref={canvasRef}
-      role="img"
-      aria-label={text}
-      className="absolute inset-0 h-full w-full font-display"
-    />
+    <>
+      {/* Painted with the HTML, before any script runs, in exactly the spot the
+          particles form the mark. It fades out as the particles take over. */}
+      <svg
+        ref={markRef}
+        viewBox="0 0 46 100"
+        aria-hidden
+        className="hero-mark pointer-events-none absolute left-1/2 top-[7%] h-[86%] w-auto -translate-x-1/2"
+      >
+        <path d="M0 21 L35 1 L35 41 Z" fill="#8c52ff" />
+        <path d="M0 50 L35 30 L35 70 Z" fill="#e2a9f1" />
+        <path d="M0 79 L35 59 L35 99 Z" fill="#ff66c4" />
+        <rect x="41.5" y="1" width="3" height="98" fill="#ffffff" />
+      </svg>
+      <canvas
+        ref={canvasRef}
+        role="img"
+        aria-label={text}
+        className="absolute inset-0 h-full w-full font-display"
+      />
+    </>
   );
 }

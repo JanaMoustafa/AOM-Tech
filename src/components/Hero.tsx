@@ -3,7 +3,7 @@
 import { motion, useMotionTemplate, useMotionValue, useScroll, useSpring, useTransform } from "motion/react";
 import { useRef } from "react";
 import { hero } from "@/content/site";
-import { EASE, Magnetic, RevealText } from "./fx";
+import { Magnetic, RevealText } from "./fx";
 import { ParticleWordmark } from "./ParticleWordmark";
 
 export function Hero() {
@@ -42,14 +42,12 @@ export function Hero() {
         </div>
       </div>
 
-      <motion.p
-        initial={{ opacity: 0, letterSpacing: "0.1em" }}
-        animate={{ opacity: 1, letterSpacing: "0.42em" }}
-        transition={{ delay: 2.3, duration: 1.4, ease: EASE }}
-        className="mx-auto mb-10 mt-2 text-center font-display text-sm text-paper/80 md:mb-14 md:text-base"
+      <p
+        style={{ animationDelay: "1.1s" }}
+        className="track-in mx-auto mb-10 mt-2 text-center font-display text-sm tracking-[0.42em] text-paper/80 md:mb-14 md:text-base"
       >
         AI. SOLUTIONS
-      </motion.p>
+      </p>
 
       <motion.div
         style={{ y: copyY, opacity: copyOpacity }}
@@ -64,12 +62,7 @@ export function Hero() {
           className="font-display text-[2.5rem] font-medium leading-[1.02] tracking-tight text-balance sm:text-5xl md:col-span-8 lg:text-[4.25rem]"
         />
 
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.9, duration: 0.8, ease: EASE }}
-          className="md:col-span-4"
-        >
+        <div style={{ animationDelay: "0.7s" }} className="fade-up md:col-span-4">
           <p className="max-w-md text-base leading-relaxed text-mist md:text-lg">{hero.body}</p>
           <div className="mt-6 flex flex-wrap gap-3">
             <Magnetic>
@@ -90,19 +83,17 @@ export function Hero() {
               </a>
             </Magnetic>
           </div>
-        </motion.div>
+        </div>
       </motion.div>
 
-      <motion.a
+      <a
         href="#work"
         aria-label="Scroll to work"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 2.6, duration: 1 }}
-        className="absolute bottom-5 left-1/2 hidden h-10 w-6 -translate-x-1/2 justify-center rounded-full border border-paper/30 pt-2 md:flex"
+        style={{ animationDelay: "1.6s" }}
+        className="fade-up absolute bottom-5 left-[calc(50%-12px)] hidden h-10 w-6 justify-center rounded-full border border-paper/30 pt-2 md:flex"
       >
         <span className="scroll-dot h-2 w-1 rounded-full bg-paper/80" />
-      </motion.a>
+      </a>
     </section>
   );
 }
