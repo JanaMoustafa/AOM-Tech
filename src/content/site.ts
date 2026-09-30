@@ -15,6 +15,7 @@ export const nav = [
   { label: "Work", href: "#work" },
   { label: "Services", href: "#services" },
   { label: "Process", href: "#process" },
+  { label: "Team", href: "#team" },
   { label: "Contact", href: "#contact" },
 ];
 
@@ -192,3 +193,33 @@ export const contact = {
   headline: "Have a problem AI should solve?",
   body: "Tell us about it. We'll reply with an honest view of whether AI is the right tool, and what it would take.",
 };
+
+export type TeamMember = {
+  name: string;
+  role: string;
+  /** Portrait in /public/team: person cut out on a transparent background. */
+  photo: string;
+  linkedin?: string;
+};
+
+// Add new members here; the section lays itself out for any number.
+export const team: TeamMember[] = [
+  {
+    name: "Abdelrahman Hossam",
+    role: "Founder",
+    photo: "/team/abdelrahman.png",
+    linkedin: "https://www.linkedin.com/in/abdelrahman-hossam-elsofany-b2083534a/",
+  },
+  {
+    name: "Mohamed El Daw",
+    role: "Co-founder & Marketing Director",
+    photo: "/team/mohamed.png",
+    linkedin: "https://www.linkedin.com/in/mohamed-haitham-el-daw-8606202b4/",
+  },
+  {
+    name: "Jana Mostafa",
+    role: "Chief Technology Officer",
+    photo: "/team/jana-mostafa-2.png",
+    linkedin: "https://www.linkedin.com/in/jana-mostafa-535ab62a2",
+  },
+];
