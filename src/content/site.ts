@@ -207,7 +207,7 @@ export const team: TeamMember[] = [
   {
     name: "Abdelrahman Hossam",
     role: "Founder",
-    photo: "/team/abdelrahman.png",
+    photo: "/team/abdelrahman-hossam.png",
     linkedin: "https://www.linkedin.com/in/abdelrahman-hossam-elsofany-b2083534a/",
   },
   {
