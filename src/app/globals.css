@@ -1,26 +1,164 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* AOM Tech brand: violet #8C52FF, lilac #E2A9F1, pink #FF66C4, white.
+   The wordmark gradient runs blue → violet → pink. */
+@theme {
+  --color-ink: #141414;
+  --color-ink-2: #1b1a21;
+  --color-ink-3: #25232e;
+  --color-paper: #ffffff;
+  --color-mist: #b9b4c7;
+  --color-blue: #5b6cff;
+  --color-violet: #8c52ff;
+  --color-lilac: #e2a9f1;
+  --color-pink: #ff66c4;
+  --color-line: rgb(255 255 255 / 0.1);
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --font-display: var(--font-jost), "Futura", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-open-sans), ui-sans-serif, system-ui, sans-serif;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+
+  --animate-drift: drift 22s ease-in-out infinite alternate;
+  --animate-drift-slow: drift 34s ease-in-out infinite alternate-reverse;
+  --animate-marquee: marquee 40s linear infinite;
+
+  @keyframes drift {
+    0% { transform: translate3d(0, 0, 0) scale(1); }
+    50% { transform: translate3d(6%, -4%, 0) scale(1.08); }
+    100% { transform: translate3d(-5%, 5%, 0) scale(0.96); }
+  }
+  @keyframes marquee {
+    to { transform: translate3d(-50%, 0, 0); }
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+:root {
+  --gradient-brand: linear-gradient(100deg, #5b6cff 0%, #8c52ff 45%, #ff66c4 100%);
+  color-scheme: dark;
 }
+
+html {
+  background: var(--color-ink);
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--color-ink);
+  color: var(--color-paper);
+  font-family: var(--font-sans);
+  overflow-x: clip;
+}
+
+::selection {
+  background: var(--color-violet);
+  color: var(--color-paper);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-lilac);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* Lenis */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis:not(.lenis-autoToggle).lenis-stopped {
+  overflow: clip;
+}
+
+@utility text-brand {
+  background-image: var(--gradient-brand);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+@utility bg-brand {
+  background-image: var(--gradient-brand);
+}
+
+/* Film grain over the gradients keeps large color fields from banding */
+@utility grain {
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.08;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Ambient motion inside the project illustrations */
+.art-scan { animation: art-scan 3.2s ease-in-out infinite alternate; }
+.art-scan-long { animation: art-scan-long 4s ease-in-out infinite alternate; }
+.art-pulse { animation: art-pulse 2.4s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+.art-bob { animation: art-bob 2.8s ease-in-out infinite; }
+.art-draw { stroke-dasharray: 420; animation: art-draw 3.5s var(--ease-out-expo) infinite alternate; }
+
+@keyframes art-scan { from { transform: translateY(0); } to { transform: translateY(124px); } }
+@keyframes art-scan-long { from { transform: translateY(0); } to { transform: translateY(240px); } }
+@keyframes art-pulse { 0%, 100% { opacity: 0.65; transform: scale(0.94); } 50% { opacity: 1; transform: scale(1.06); } }
+@keyframes art-bob { 0%, 100% { translate: 0 0; } 50% { translate: 0 -6px; } }
+@keyframes art-draw { from { stroke-dashoffset: 420; } to { stroke-dashoffset: 0; } }
+
+/* A highlight that sweeps across gradient buttons every few seconds */
+.shine {
+  background: linear-gradient(110deg, transparent 30%, rgb(255 255 255 / 0.45) 50%, transparent 70%);
+  background-size: 250% 100%;
+  animation: shine 4.5s ease-in-out infinite;
+}
+@keyframes shine {
+  0%, 60% { background-position: 150% 0; }
+  100% { background-position: -100% 0; }
+}
+
+/* Scroll hint in the hero */
+.scroll-dot { animation: scroll-dot 1.8s var(--ease-out-expo) infinite; }
+@keyframes scroll-dot {
+  0% { transform: translateY(0); opacity: 1; }
+  80% { transform: translateY(14px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 0; }
+}
+
+/* Gradient that slowly flows through text */
+.text-shimmer {
+  background-image: linear-gradient(100deg, #ffffff 0%, #ffffff 30%, #e2a9f1 42%, #ff66c4 50%, #8c52ff 58%, #ffffff 70%, #ffffff 100%);
+  background-size: 300% 100%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  animation: shimmer 7s ease-in-out infinite;
+}
+@keyframes shimmer {
+  0% { background-position: 100% 0; }
+  100% { background-position: 0% 0; }
+}
+
+/* Rotating conic border for highlighted cards */
+@property --angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+.ring-spin {
+  background: conic-gradient(from var(--angle), transparent 0deg, #8c52ff 60deg, #ff66c4 120deg, transparent 180deg, transparent 360deg);
+  animation: ring-spin 6s linear infinite;
+}
+@keyframes ring-spin { to { --angle: 360deg; } }
