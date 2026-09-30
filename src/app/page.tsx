@@ -1,6 +1,7 @@
 import { Contact } from "@/components/Contact";
 import { Footer } from "@/components/Footer";
 import { Hero } from "@/components/Hero";
+import { HeroParticlesScript } from "@/components/HeroParticlesScript";
 import { Marquee } from "@/components/Marquee";
 import { Nav } from "@/components/Nav";
 import { Process } from "@/components/Process";
@@ -13,6 +14,7 @@ export default function Home() {
       <Nav />
       <main id="main">
         <Hero />
+        <HeroParticlesScript />
         <Marquee />
         <Work />
         <Services />
