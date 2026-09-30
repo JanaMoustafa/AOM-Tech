@@ -6,6 +6,11 @@ import { team } from "@/content/site";
 import { type CSSProperties, useRef } from "react";
 import { EASE, RevealText, Tilt } from "./fx";
 
+// Four fit on one row on wide screens (2×2 below that); other counts use three
+// columns, so a fifth member lands centred on a second row.
+const four = team.length === 4;
+const gridCols = four ? "sm:grid-cols-2 xl:grid-cols-4" : "sm:grid-cols-2 lg:grid-cols-3";
+
 export function Team() {
   return (
     <section id="team" className="relative scroll-mt-16 border-t border-line">
@@ -20,7 +25,7 @@ export function Team() {
           </p>
         </div>
 
-        <ul className="mt-14 grid gap-6 sm:grid-cols-2 md:gap-8 lg:grid-cols-3">
+        <ul className={`mt-14 grid gap-6 md:gap-8 ${gridCols} ${four ? "" : "lg:[&>li:last-child:nth-child(3n+1)]:col-start-2"}`}>
           {team.map((m, i) => (
             <motion.li
               key={m.name}
@@ -28,35 +33,39 @@ export function Team() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "0px 0px -10% 0px" }}
               transition={{ delay: i * 0.12, duration: 1, ease: EASE }}
+              className="h-full"
             >
-              <Tilt max={5} className="group relative rounded-[29px]">
+              <Tilt max={5} className="group relative h-full rounded-[29px]">
                 <div
                   aria-hidden
                   className="absolute -inset-px overflow-hidden rounded-[29px] opacity-0 transition-opacity duration-500 group-hover:opacity-100"
                 >
                   <div className="ring-spin absolute left-1/2 top-1/2 aspect-square w-[160%] -translate-x-1/2 -translate-y-1/2" />
                 </div>
-                <article className="relative overflow-hidden rounded-[28px] border border-line bg-ink-2">
+                <article className="relative h-full overflow-hidden rounded-[28px] border border-line bg-ink-2">
                   <Portrait photo={m.photo} alt={`${m.name}, ${m.role}`} index={i} />
 
-                  <div className="relative -mt-20 flex items-end justify-between gap-4 px-6 pb-6 sm:px-7 sm:pb-7">
-                    <div>
-                      <h3 className="font-display text-2xl font-medium tracking-tight sm:text-[1.75rem]">{m.name}</h3>
-                      <p className="mt-1 text-lilac">{m.role}</p>
-                    </div>
-                    {m.linkedin && (
-                      <a
-                        href={m.linkedin}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        aria-label={`${m.name} on LinkedIn`}
-                        className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-paper/20 bg-ink/40 backdrop-blur transition-colors hover:border-paper/60 hover:bg-paper hover:text-ink"
-                      >
-                        <svg viewBox="0 0 24 24" className="h-[18px] w-[18px]" fill="currentColor" aria-hidden>
-                          <path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.34V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28ZM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13ZM7.12 20.45H3.56V9h3.56v11.45ZM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0Z" />
-                        </svg>
-                      </a>
-                    )}
+                  {m.linkedin && (
+                    <a
+                      href={m.linkedin}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={`${m.name} on LinkedIn`}
+                      className="absolute right-4 top-4 z-10 grid h-11 w-11 place-items-center rounded-full border border-paper/20 bg-ink/40 backdrop-blur transition-colors hover:border-paper/60 hover:bg-paper hover:text-ink"
+                    >
+                      <svg viewBox="0 0 24 24" className="h-[18px] w-[18px]" fill="currentColor" aria-hidden>
+                        <path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.34V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28ZM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13ZM7.12 20.45H3.56V9h3.56v11.45ZM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0Z" />
+                      </svg>
+                    </a>
+                  )}
+
+                  <div className="relative -mt-20 px-6 pb-6 sm:px-7 sm:pb-7">
+                    <h3
+                      className={`font-display text-2xl font-medium tracking-tight ${four ? "sm:text-[1.75rem] xl:text-[1.35rem]" : "sm:text-[1.75rem]"}`}
+                    >
+                      {m.name}
+                    </h3>
+                    <p className={`mt-1 text-lilac ${four ? "xl:text-[0.95rem]" : ""}`}>{m.role}</p>
                   </div>
                 </article>
               </Tilt>
@@ -131,7 +140,7 @@ function Portrait({ photo, alt, index }: { photo: string; alt: string; index: nu
             fill
             quality={90}
             priority={false}
-            sizes="(min-width: 1024px) 400px, (min-width: 640px) 50vw, 100vw"
+            sizes="(min-width: 1280px) 400px, (min-width: 640px) 50vw, 100vw"
             className="object-cover [filter:drop-shadow(0_0_1.5px_rgb(226_169_241/0.55))_drop-shadow(0_0_28px_rgb(140_82_255/0.45))]"
             style={{ maskImage: fade, WebkitMaskImage: fade }}
           />

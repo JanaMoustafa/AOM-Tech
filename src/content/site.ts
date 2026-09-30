@@ -222,4 +222,10 @@ export const team: TeamMember[] = [
     photo: "/team/jana-mostafa-3.png",
     linkedin: "https://www.linkedin.com/in/jana-mostafa-535ab62a2",
   },
+  {
+    name: "Omar Abdelbary",
+    role: "Chief Operating Officer",
+    photo: "/team/omar-abdelbary-3.png",
+    linkedin: "https://www.linkedin.com/in/omar-abdelbary-98b56021a",
+  },
 ];
