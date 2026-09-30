@@ -225,7 +225,7 @@ export const team: TeamMember[] = [
   {
     name: "Omar Abdelbary",
     role: "Chief Operating Officer",
-    photo: "/team/omar-abdelbary.png",
+    photo: "/team/omar-abdelbary-2.png",
     linkedin: "https://www.linkedin.com/in/omar-abdelbary-98b56021a",
   },
 ];
