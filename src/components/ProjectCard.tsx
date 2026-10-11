@@ -8,6 +8,7 @@ import { ProjectArt } from "./ProjectArt";
 
 const statusStyle: Record<Project["status"], string> = {
   Live: "bg-pink/15 text-pink",
+  Beta: "bg-pink/15 text-pink",
   "Published research": "bg-violet/20 text-lilac",
   Research: "bg-paper/10 text-paper/80",
   "In development": "bg-blue/15 text-[#a9b1ff]",
@@ -51,7 +52,7 @@ export function ProjectCard({ project, wide = false }: { project: Project; wide?
         <div className={`flex flex-col p-6 sm:p-8 ${wide ? "overflow-y-auto lg:p-10" : ""}`}>
           <div className="flex flex-wrap items-center gap-2 text-sm">
             <span className={`rounded-full px-3 py-1 font-medium ${statusStyle[project.status]}`}>
-              {project.status === "Live" && (
+              {(project.status === "Live" || project.status === "Beta") && (
                 <span className="relative mr-1.5 inline-flex h-2 w-2 translate-y-[-1px]">
                   <span className="absolute inset-0 animate-ping rounded-full bg-pink/70" />
                   <span className="relative h-2 w-2 rounded-full bg-pink" />

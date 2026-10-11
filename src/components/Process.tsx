@@ -59,7 +59,7 @@ export function Process() {
               className="font-display text-4xl font-medium tracking-tight sm:text-5xl lg:text-6xl"
             />
             <p className="mt-4 max-w-md text-lg leading-relaxed text-mist">
-              Four stages, and we only move to the next one when the last one has proven itself.
+              From the first conversation to marketing and running the product. We only move to the next stage when the last one has proven itself.
             </p>
           </div>
         </div>
