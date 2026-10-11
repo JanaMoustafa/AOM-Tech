@@ -6,7 +6,6 @@ import { Marquee } from "@/components/Marquee";
 import { Nav } from "@/components/Nav";
 import { Process } from "@/components/Process";
 import { Services } from "@/components/Services";
-import { Team } from "@/components/Team";
 import { Work } from "@/components/Work";
 
 export default function Home() {
@@ -20,7 +19,6 @@ export default function Home() {
         <Work />
         <Services />
         <Process />
-        <Team />
         <Contact />
       </main>
       <Footer />

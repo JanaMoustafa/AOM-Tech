@@ -19,8 +19,8 @@ function Intro() {
         className="font-display text-4xl font-medium tracking-tight sm:text-5xl lg:text-6xl"
       />
       <p className="mt-4 text-lg leading-relaxed text-mist">
-        Healthcare AI published in a peer-reviewed journal, a medical imaging model, an app people use every day,
-        and two products on the way.
+        An AI financial council in beta, healthcare AI published in a peer-reviewed journal, a medical imaging
+        model, an app people use every day, and two products on the way.
       </p>
     </div>
   );

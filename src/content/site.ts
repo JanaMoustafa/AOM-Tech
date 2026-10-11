@@ -7,7 +7,7 @@ export const site = {
   email: "aomtech.ai@gmail.com",
   tagline: "AI solutions, built to ship.",
   description:
-    "AOM Tech builds computer vision, forecasting and LLM systems, and the products around them — from peer-reviewed healthcare AI to apps people use every day.",
+    "AOM Tech is an AI solutions startup that builds practical AI products, apps and websites for businesses and everyday users.",
   socials: [{ label: "LinkedIn", href: "https://www.linkedin.com/in/aom-tech-55b85443b" }],
 };
 
@@ -15,25 +15,24 @@ export const nav = [
   { label: "Work", href: "#work" },
   { label: "Services", href: "#services" },
   { label: "Process", href: "#process" },
-  { label: "Team", href: "#team" },
   { label: "Contact", href: "#contact" },
 ];
 
 export const hero = {
-  headline: "We turn research-grade AI into products people use.",
-  body: "Computer vision, forecasting and language models — trained, measured honestly, and shipped inside real apps.",
+  headline: "We turn problems into AI solutions.",
+  body: "An AI solutions startup that builds practical AI products, apps and websites for businesses and everyday users.",
   primaryCta: { label: "See our work", href: "#work" },
   secondaryCta: { label: "Start a project", href: "#contact" },
 };
 
-export type ProjectArtKind = "diadose" | "bone" | "goose" | "osta" | "uai";
+export type ProjectArtKind = "majlis" | "diadose" | "bone" | "goose" | "osta" | "uai";
 
 export type Project = {
   slug: string;
   name: string;
   tagline: string;
   sector: string;
-  status: "Live" | "Published research" | "Research" | "In development";
+  status: "Live" | "Beta" | "Published research" | "Research" | "In development";
   summary: string;
   /** Headline numbers. Leave empty for projects without measured results yet. */
   metrics: { value: string; label: string }[];
@@ -48,6 +47,24 @@ export type Project = {
 };
 
 export const projects: Project[] = [
+  {
+    slug: "majlis",
+    name: "Majlis",
+    tagline: "An AI financial council for Egyptian founders.",
+    sector: "Business finance",
+    status: "Beta",
+    summary:
+      "Upload your bank statements, invoices and contracts, then ask a money question in Egyptian Arabic or English. Up to eight AI advisors debate it, from an Analyst and a Risk Officer to a Skeptic and an Auditor, and the Chair gives you one clear verdict with next steps.",
+    metrics: [
+      { value: "8", label: "AI advisors debate every money decision" },
+      { value: "1", label: "clear verdict, with next steps" },
+      { value: "0", label: "numbers guessed: tested code does the maths" },
+    ],
+    stack: ["Multi-agent AI", "Calculation engine", "Egyptian Arabic RTL", "InstaPay"],
+    link: { label: "Try Majlis", href: "https://majlis-eg.vercel.app" },
+    note: "In beta. Business finance guidance, not investment, legal or tax advice.",
+    art: "majlis",
+  },
   {
     slug: "diadose",
     name: "DiaDose",
@@ -184,8 +201,16 @@ export const process = [
     body: "We wrap the model in a product: an API, a dashboard or an app, with security and testing built in from the start.",
   },
   {
-    title: "Launch & improve",
-    body: "We deploy, measure how it performs with real users, and keep improving the model as new data arrives.",
+    title: "Launch",
+    body: "We deploy it and measure how it performs with real users, so every next decision is based on real results.",
+  },
+  {
+    title: "Market",
+    body: "Once the solution works, we market it: positioning, launch content and campaigns that reach the people it was built for.",
+  },
+  {
+    title: "Operate & improve",
+    body: "We also handle the operations: support, monitoring and updates, while we keep improving the product as new data arrives.",
   },
 ];
 
@@ -193,39 +218,3 @@ export const contact = {
   headline: "Have a problem AI should solve?",
   body: "Tell us about it. We'll reply with an honest view of whether AI is the right tool, and what it would take.",
 };
-
-export type TeamMember = {
-  name: string;
-  role: string;
-  /** Portrait in /public/team: person cut out on a transparent background. */
-  photo: string;
-  linkedin?: string;
-};
-
-// Add new members here; the section lays itself out for any number.
-export const team: TeamMember[] = [
-  {
-    name: "Abdelrahman Hossam",
-    role: "Founder",
-    photo: "/team/abdelrahman-hossam.png",
-    linkedin: "https://www.linkedin.com/in/abdelrahman-hossam-elsofany-b2083534a/",
-  },
-  {
-    name: "Mohamed El Daw",
-    role: "Co-founder & Marketing Director",
-    photo: "/team/mohamed.png",
-    linkedin: "https://www.linkedin.com/in/mohamed-haitham-el-daw-8606202b4/",
-  },
-  {
-    name: "Jana Mostafa",
-    role: "Chief Technology Officer",
-    photo: "/team/jana-mostafa-3.png",
-    linkedin: "https://www.linkedin.com/in/jana-mostafa-535ab62a2",
-  },
-  {
-    name: "Omar Abdelbary",
-    role: "Chief Operating Officer",
-    photo: "/team/omar-abdelbary-3.png",
-    linkedin: "https://www.linkedin.com/in/omar-abdelbary-98b56021a",
-  },
-];

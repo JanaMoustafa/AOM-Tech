@@ -26,12 +26,93 @@ export function ProjectArt({ kind }: { kind: ProjectArtKind }) {
           <stop offset="1" stopColor="#ff66c4" stopOpacity="0" />
         </radialGradient>
       </defs>
+      {kind === "majlis" && <Majlis g={g} />}
       {kind === "diadose" && <DiaDose g={g} />}
       {kind === "bone" && <Bone g={g} />}
       {kind === "goose" && <Goose g={g} />}
       {kind === "osta" && <Osta g={g} />}
       {kind === "uai" && <Uai g={g} />}
     </svg>
+  );
+}
+
+// Eight advisors seated around the council table, every voice feeding one
+// verdict in the middle, with the founder's documents coming in from the side.
+function Majlis({ g }: { g: string }) {
+  const seats = Array.from({ length: 8 }, (_, i) => {
+    const a = -Math.PI / 2 + (i * Math.PI) / 4;
+    return { x: 200 + 136 * Math.cos(a), y: 150 + 100 * Math.sin(a) };
+  });
+  const fills = ["#8c52ff", "#e2a9f1", "#5b6cff", "#ff66c4", "#8c52ff", "#e2a9f1", "#5b6cff", "#ff66c4"];
+  return (
+    <g>
+      <ellipse cx="200" cy="150" rx="104" ry="74" fill="#fff" fillOpacity="0.03" stroke="#fff" strokeOpacity="0.14" />
+      <ellipse cx="200" cy="150" rx="136" ry="100" fill="none" stroke="#e2a9f1" strokeOpacity="0.18" strokeDasharray="2 6" />
+      {seats.map((s, i) => (
+        <line
+          key={`l${i}`}
+          x1={s.x}
+          y1={s.y}
+          x2="200"
+          y2="150"
+          stroke={`url(#${g})`}
+          strokeOpacity="0.45"
+          strokeWidth="1.5"
+          className={i % 2 ? "art-draw" : undefined}
+        />
+      ))}
+      {/* The verdict */}
+      <rect x="138" y="124" width="124" height="52" rx="14" fill="#141414" stroke={`url(#${g})`} strokeWidth="2" />
+      <g className="art-pulse">
+        <circle cx="160" cy="150" r="11" fill={`url(#${g})`} />
+        <path d="M155 150 l4 4 l7 -8" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" />
+      </g>
+      <rect x="178" y="141" width="66" height="6" rx="3" fill="#fff" fillOpacity="0.6" />
+      <rect x="178" y="154" width="44" height="5" rx="2.5" fill="#fff" fillOpacity="0.25" />
+      {/* The council */}
+      {seats.map((s, i) => (
+        <g key={`s${i}`}>
+          <circle cx={s.x} cy={s.y} r={i === 0 ? 15 : 12} fill="#141414" />
+          <circle
+            cx={s.x}
+            cy={s.y}
+            r={i === 0 ? 15 : 12}
+            fill={i === 0 ? `url(#${g})` : fills[i]}
+            fillOpacity={i === 0 ? 1 : 0.75}
+            className={i === 0 ? "art-pulse" : undefined}
+          />
+        </g>
+      ))}
+      {/* Two advisors mid-debate */}
+      <g className="art-bob">
+        <rect x="300" y="38" width="74" height="26" rx="10" fill="#fff" fillOpacity="0.08" stroke="#fff" strokeOpacity="0.2" />
+        <rect x="310" y="47" width="42" height="4" rx="2" fill="#fff" fillOpacity="0.5" />
+        <rect x="310" y="55" width="28" height="4" rx="2" fill="#ff66c4" fillOpacity="0.7" />
+      </g>
+      <g className="art-bob" style={{ animationDelay: "-1.4s" }}>
+        <rect x="14" y="96" width="70" height="26" rx="10" fill="#fff" fillOpacity="0.08" stroke="#fff" strokeOpacity="0.2" />
+        <rect x="24" y="105" width="38" height="4" rx="2" fill="#fff" fillOpacity="0.5" />
+        <rect x="24" y="113" width="24" height="4" rx="2" fill="#8c52ff" fillOpacity="0.9" />
+      </g>
+      {/* Documents coming in */}
+      <g>
+        {[0, 1, 2].map((k) => (
+          <rect
+            key={k}
+            x={22 + k * 6}
+            y={236 - k * 6}
+            width="34"
+            height="42"
+            rx="5"
+            fill="#25232e"
+            stroke="#fff"
+            strokeOpacity={0.15 + k * 0.1}
+          />
+        ))}
+        <rect x="41" y="226" width="18" height="3" rx="1.5" fill="#fff" fillOpacity="0.45" />
+        <rect x="41" y="233" width="12" height="3" rx="1.5" fill="#fff" fillOpacity="0.3" />
+      </g>
+    </g>
   );
 }
 
